@@ -14,7 +14,6 @@ public class Elevator implements Runnable{
     private final Set<Request> requests;
     private RequestProcessingStrategy strategy;
     private int id;
-
     public Elevator(){
         this.state=ElevatorState.REST;
         this.currFloor=0;
@@ -41,16 +40,29 @@ public class Elevator implements Runnable{
         return this.requests.size();
     }
     private void step() throws InterruptedException {
+        boolean serviced = this.requests.removeIf(req -> req.floor() == this.currFloor);
+        if (serviced) {
+            System.out.println("Elevator " + this.getId() + " opened doors and serviced floor: " + this.currFloor);
+            Thread.sleep(1000); // Door open/close time
+        }
+
         Request nextRequest=this.strategy.selectNextRequest(this.requests,this.currFloor,this.state);
         if(nextRequest==null){
             this.state= this.state.equals(ElevatorState.GOING_UP) ? ElevatorState.GOING_DOWN : ElevatorState.GOING_UP;
             Thread.sleep(1000);
             return;
         }
-        System.out.println("Elevator "+this.getId()+" next stop is: "+nextRequest.floor());
-        this.requests.remove(nextRequest);
-        this.currFloor=nextRequest.floor();
-        this.state=nextRequest.type().equals(RequestType.PICKUP_UP) ?ElevatorState.GOING_UP : ElevatorState.GOING_DOWN;
+//        System.out.println("Elevator "+this.getId()+" next stop is: "+nextRequest.floor());
+
+        if(nextRequest.floor()>this.currFloor){
+            this.state=ElevatorState.GOING_UP;
+            this.currFloor++;
+        } else if(nextRequest.floor()<this.currFloor){
+            this.state=ElevatorState.GOING_DOWN;
+            this.currFloor--;
+        }
+
+        System.out.println("Elevator " + this.getId() + " is at floor " + this.currFloor + " (" + this.state + ")");
         Thread.sleep(1000);
     }
 
