@@ -1,0 +1,8 @@
+
+1. System will have multiple elevators
+2. User will press up or down arrows on outside of the elevator orchestrator and an elevator will be scheduled
+for users floor if no elevator is sceduled for that floor.
+3. Inside the elevator when a user presses his floor button. If elevator is at rest, it will start moving to
+that floor. Otherwise, if the elevator is already in motion it will pause on users floor for some time and continue if other floor
+buttons are also pressed.
+

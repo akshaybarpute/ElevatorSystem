@@ -1,0 +1,6 @@
+package org.example;
+
+public enum RequestType {
+    PICKUP_UP,
+    PICKUP_DOWN
+}
