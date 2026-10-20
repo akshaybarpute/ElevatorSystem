@@ -5,6 +5,7 @@ import org.example.requestStrategy.RequestProcessingStrategy;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Elevator implements Runnable{
     private ElevatorState state;
@@ -17,7 +18,7 @@ public class Elevator implements Runnable{
     public Elevator(){
         this.state=ElevatorState.REST;
         this.currFloor=0;
-        this.requests=new HashSet<>();
+        this.requests= ConcurrentHashMap.newKeySet();
         this.strategy=new DefaultRequestProcessingStrategy();
         this.maxFloors=12;
     }
@@ -40,19 +41,16 @@ public class Elevator implements Runnable{
         return this.requests.size();
     }
     private void step() throws InterruptedException {
-        if(currFloor==maxFloors){
-            this.state=ElevatorState.GOING_DOWN;
-        }else if(currFloor==1){
-            this.state=ElevatorState.GOING_UP;
-        }
         Request nextRequest=this.strategy.selectNextRequest(this.requests,this.currFloor,this.state);
-        if (nextRequest==null){
-            this.state=ElevatorState.REST;
+        if(nextRequest==null){
+            this.state= this.state.equals(ElevatorState.GOING_UP) ? ElevatorState.GOING_DOWN : ElevatorState.GOING_UP;
+            Thread.sleep(1000);
             return;
         }
         System.out.println("Elevator "+this.getId()+" next stop is: "+nextRequest.floor());
         this.requests.remove(nextRequest);
         this.currFloor=nextRequest.floor();
+        this.state=nextRequest.type().equals(RequestType.PICKUP_UP) ?ElevatorState.GOING_UP : ElevatorState.GOING_DOWN;
         Thread.sleep(1000);
     }
 
