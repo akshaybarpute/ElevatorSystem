@@ -17,6 +17,10 @@ public class ElevatorSystem {
         this.stategy=new LeastBusyElevatorSystemRequestAssignmentStrategy();
     }
     public boolean registerRequest(Request request){
+        if(request.type().equals(RequestType.DESTINATION) && request.elevator()!=null){
+            request.elevator().registerRequest(request); // request registered inside the elevator by pressing button
+            return true;
+        }
         if(this.elevetors.size()==0){
             return false;
         }

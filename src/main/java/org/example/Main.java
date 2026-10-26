@@ -38,7 +38,7 @@ public class Main {
                 int nextFloor=ThreadLocalRandom.current().nextInt(1, 13); // Upper bound is exclusive
                 boolean dir=ThreadLocalRandom.current().nextBoolean();
                 RequestType type = dir ? RequestType.PICKUP_UP : RequestType.PICKUP_DOWN;
-                elevatorSystem.registerRequest(new Request(nextFloor,type));
+                elevatorSystem.registerRequest(new Request(nextFloor,type,null));
                 try {
                     Thread.sleep(600);
                 } catch (InterruptedException e) {
@@ -48,5 +48,8 @@ public class Main {
         });
 
         t.start();
+        System.out.println("Manual requests are added in the queue");
+        elevatorSystem.registerRequest(new Request(10,RequestType.DESTINATION,l.get(0)));
+        elevatorSystem.registerRequest(new Request(1,RequestType.DESTINATION,l.get(1)));
     }
 }
