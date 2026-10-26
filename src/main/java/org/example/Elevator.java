@@ -46,9 +46,14 @@ public class Elevator implements Runnable{
             Thread.sleep(1000); // Door open/close time
         }
 
+        if(requests.size()==0){
+            this.state=ElevatorState.REST;
+            return;
+        }
+
         Request nextRequest=this.strategy.selectNextRequest(this.requests,this.currFloor,this.state);
         if(nextRequest==null){
-            this.state= this.state.equals(ElevatorState.GOING_UP) ? ElevatorState.GOING_DOWN : ElevatorState.GOING_UP;
+            this.state= this.state.equals(ElevatorState.GOING_UP) || this.state.equals(ElevatorState.REST) ? ElevatorState.GOING_DOWN : ElevatorState.GOING_UP;
             Thread.sleep(1000);
             return;
         }
