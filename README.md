@@ -5,4 +5,4 @@
 
 - Improvements needed:
   For DEST requests, we are currently passing Elevator object itself in the requests. It is anti-pattern. We should instead assign id field
-  to elevator and that should pass i DEST requests.
+  to elevator and that should pass id in DEST requests.
